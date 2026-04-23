@@ -24,7 +24,7 @@ public class NPC : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("=== NPC СКРИПТ ЗАПУЩЕН ===");
+        Debug.Log("NPC СКРИПТ ЗАПУЩЕН");
 
         // Ищем игрока по тегу один раз при старте
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");

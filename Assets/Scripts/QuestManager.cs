@@ -7,16 +7,17 @@ using UnityEngine.UI;
 public class QuestManager : MonoBehaviour
 {
     [Header("Quest Settings")]
-    [SerializeField] private int totalNotes = 3; // Сколько всего записок на уровне
-    [SerializeField] private bool needTalkToNPC = true; // Нужно ли говорить с NPC для завершения
+    [SerializeField] private int totalNotes = 3; // Сколько записок нужно собрать
+    [SerializeField] private bool needTalkToNPC = true; // Нужно ли говорить с NPC
 
     [Header("UI & World")]
-    [SerializeField] private Text questStatusText; // Текстовое поле для отображения прогресса (опционально)
-    [SerializeField] private GameObject questCompletePanel; // Панель "Победа" (опционально)
-    [SerializeField] private GameObject exitDoor; // Дверь, которая откроется в конце
+    [SerializeField] private Text questStatusText; // Текст статуса (верхний левый угол)
+    [SerializeField] private GameObject questCompletePanel; // Панель "Квест выполнен"
+    [SerializeField] private GameObject exitDoor; // Объект, блокирующий выход
 
     private int notesCollected = 0;
     private bool talkedToNPC = false;
+    private bool questFinished = false;
 
     private void Start()
     {
@@ -25,9 +26,10 @@ public class QuestManager : MonoBehaviour
             questCompletePanel.SetActive(false);
     }
 
-    // Вызывается из Note.cs при сборе записки
+    // Вызывается из Note.cs при подборе записки
     public void NoteCollected()
     {
+        if (questFinished) return;
         notesCollected++;
         UpdateQuestUI();
         CheckCompletion();
@@ -36,6 +38,7 @@ public class QuestManager : MonoBehaviour
     // Вызывается из NPC.cs после разговора
     public void NPCTalked()
     {
+        if (questFinished) return;
         talkedToNPC = true;
         UpdateQuestUI();
         CheckCompletion();
@@ -54,7 +57,8 @@ public class QuestManager : MonoBehaviour
 
     private void QuestComplete()
     {
-        Debug.Log("Квест выполнен! Уровень пройден.");
+        questFinished = true;
+        Debug.Log(" Квест выполнен! Уровень пройден.");
         if (questCompletePanel != null)
             questCompletePanel.SetActive(true);
 
@@ -66,9 +70,9 @@ public class QuestManager : MonoBehaviour
     {
         if (questStatusText != null)
         {
-            string status = $"Записки: {notesCollected}/{totalNotes}";
+            string status = $"?? Записки: {notesCollected}/{totalNotes}";
             if (needTalkToNPC)
-                status += $"\nРазговор с NPC: {(talkedToNPC ? "?" : "")}";
+                status += $"\n?? Диалог с NPC: {(talkedToNPC ? "?" : "?")}";
 
             questStatusText.text = status;
         }

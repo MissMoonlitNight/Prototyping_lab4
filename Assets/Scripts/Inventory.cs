@@ -47,14 +47,13 @@ public class Inventory : MonoBehaviour
 
     private void ShowNoteFromInventory(NoteData note)
     {
+        inventoryPanel.SetActive(false); // Временно скрываем инвентарь
         NoteUI noteUI = FindObjectOfType<NoteUI>();
         if (noteUI != null)
         {
-            noteUI.ShowNote(note.title, note.content);
+            // Передаём true, чтобы NoteUI знал, что нужно вернуть инвентарь
+            noteUI.ShowNote(note.title, note.content, true);
         }
-
-        // Опционально: закрываем инвентарь после выбора
-        // inventoryPanel.SetActive(false); 
     }
 
     private void ToggleInventory()
@@ -65,5 +64,16 @@ public class Inventory : MonoBehaviour
         Cursor.lockState = isActive ? CursorLockMode.Locked : CursorLockMode.None;
         Cursor.visible = !isActive;
         Time.timeScale = isActive ? 1f : 0f; // Пауза при открытом инвентаре
+    }
+    /// <summary>
+    /// Восстанавливает панель инвентаря после чтения записки.
+    /// Вызывается из NoteUI.CloseNote()
+    /// </summary>
+    public void RestoreInventoryUI()
+    {
+        inventoryPanel.SetActive(true);
+        Time.timeScale = 0f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }
